@@ -1,6 +1,6 @@
 
 
-def find_TP(speech_stream: list[str]) -> dict:
+def find_tps(speech_stream: list[str]) -> dict:
     """calculates the probability of syllable a being followed by syllable b
     :returns: a dict in which the probability of a being followed by b is denoted in dict[(a,b)]"""
     #find quantity of syllables as well as transitional quantity

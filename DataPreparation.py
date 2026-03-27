@@ -5,7 +5,6 @@ import random
 # training stimuli from Saffran et al.
 condition_a = ["tupiro", "golabu", "bidaku", "padoti"]
 condition_b = ["dapiku", "tilado", "burobi", "pagotu"]
-overall_words = condition_a + condition_b
 
 # test stimuli (2 "words", 2 "non-words" depending on condition)
 stimuli_test = ["tupiro", "golabu", "dapiku", "tilado"]
@@ -24,6 +23,9 @@ def syllabify_list(words: list[str]) -> list[list[str]]:
         result.append(syllabify(word))
 
     return result
+
+syllabified_condition_a = syllabify_list(condition_a)
+syllabified_condition_b = syllabify_list(condition_b)
 
 # create the training stimulus consisting of n "words"
 def build_continuous_speech_stream(syllabified_words: list[list[str]], num_words: int, seed = None) -> list[str]:

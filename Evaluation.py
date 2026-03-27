@@ -1,6 +1,4 @@
 
-from DataPreparation import overall_words
-
 def separate_stream_using_tps(stream: list[str], tps: dict) -> list[str]:
     """calculates a threshold for which syllables to combine into a word
      and separates the syllable stream according to the tps and the calculated threshold
@@ -23,10 +21,10 @@ def separate_stream_using_tps(stream: list[str], tps: dict) -> list[str]:
 
     return word_list
 
-def evaluate_accuracy(word_list: list[str]) -> float:
+def evaluate_accuracy(word_list: list[str], training_set: list[str]) -> float:
     correct = 0
     for word in word_list:
-        if word in overall_words:
+        if word in training_set:
             correct += 1
 
     return correct / len(word_list)
