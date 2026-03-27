@@ -1,6 +1,7 @@
 from DataPreparation import *
 from StatisticalTraining import *
 from Evaluation import *
+from VisualizeExperiment import *
 
 def run_experiment(num_trials: int) -> (dict, dict, float):
     summed_accuracy = 0
@@ -56,3 +57,4 @@ if __name__ == '__main__':
     overall_tps_a, overall_tps_b, overall_accuracy = run_experiment(num_trials=24)
     print(f"overall_accuracy on 24 trials: {overall_accuracy}")
     print(f"overall_tps on 24 trials: {overall_tps_a, overall_tps_b}")
+    plot_results(overall_tps_a, overall_tps_b)
