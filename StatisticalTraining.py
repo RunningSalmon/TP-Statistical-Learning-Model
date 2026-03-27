@@ -2,7 +2,7 @@
 
 def find_TP(speech_stream: list[str]) -> dict:
     """calculates the probability of syllable a being followed by syllable b
-    :return a dict in which the probability of a being followed by b is denoted in dict[(a,b)]"""
+    :returns: a dict in which the probability of a being followed by b is denoted in dict[(a,b)]"""
     #find quantity of syllables as well as transitional quantity
     unigram_counts = {}
     bigram_counts = {}
