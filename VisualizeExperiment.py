@@ -1,8 +1,13 @@
+import pickle
+
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 import numpy as np
 from DataPreparation import *
 
-def plot_results(tps_a: dict, tps_b: dict):
+def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, experiment_nr):
+
+    condition_a, condition_b, _ = pick_training_set_from_expnr(experiment_nr)
 
     def get_within_between_pairs(tps: dict, condition: list[str]) -> tuple[dict, dict]:
         """split TP dict into within-word and between-word pairs"""
@@ -25,59 +30,72 @@ def plot_results(tps_a: dict, tps_b: dict):
     within_a, between_a = get_within_between_pairs(tps_a, condition_a)
     within_b, between_b = get_within_between_pairs(tps_b, condition_b)
 
-    # --- Plot 1 ---
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
+    def make_legend(mean_val):
+        return [
+            mlines.Line2D([0], [0], color="steelblue", linewidth=6, label="within-word"),
+            mlines.Line2D([0], [0], color="salmon",    linewidth=6, label="between-word"),
+            mlines.Line2D([0], [0], color="dimgray", linestyle="--", label=f"mean = {mean_val:.2f}"),
+        ]
 
-    def plot_all_pairs(ax, within, between, title):
-        # within-word pairs first, then between-word
-        pairs = list(within.keys()) + list(between.keys())
-        values = list(within.values()) + list(between.values())
-        colors = ["steelblue"] * len(within) + ["salmon"] * len(between)
+    # --- Plot 1 ---
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 9))
+
+    def plot_all_pairs(ax, within, between):
+        within_sorted = dict(sorted(within.items(), key=lambda x: x[1], reverse=True))
+        between_sorted = dict(sorted(between.items(), key=lambda x: x[1], reverse=True))
+
+        pairs = list(within_sorted.keys()) + list(between_sorted.keys())
+        values = list(within_sorted.values()) + list(between_sorted.values())
+        colors = ["steelblue"] * len(within_sorted) + ["salmon"] * len(between_sorted)
         x = np.arange(len(pairs))
         labels = [f"{a}-{b}" for a, b in pairs]
 
         ax.bar(x, values, color=colors)
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=8)
-        ax.set_title(title)
-        ax.set_ylabel("Mean TP")
+        ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=16)
+        ax.set_ylabel("Mean TP", fontsize = 16)
         ax.set_ylim(0, 1.1)
-        # divider line between within and between
-        ax.axvline(x=len(within) - 0.5, color="gray", linestyle="--", linewidth=1)
+        ax.tick_params(axis='y', labelsize=16)
+        ax.axvline(x=len(within_sorted) - 0.5, color="gray", linestyle="--", linewidth=1)
+        mean_val = np.mean(values)
+        ax.axhline(y=mean_val, color="dimgray", linestyle="--", linewidth=1)
+        ax.legend(handles=make_legend(mean_val), loc="upper right", fontsize=16)
 
-    plot_all_pairs(ax1, within_a, between_a, "Condition A – all pairs")
-    plot_all_pairs(ax2, within_b, between_b, "Condition B – all pairs")
+    plot_all_pairs(ax1, within_a, between_a)
+    plot_all_pairs(ax2, within_b, between_b)
 
-    from matplotlib.patches import Patch
-    legend = [Patch(facecolor="steelblue", label="within-word"),
-              Patch(facecolor="salmon",    label="between-word")]
-    fig.legend(handles=legend, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.05))
-    plt.suptitle("Plot 1: TP per syllable pair")
     plt.tight_layout()
     plt.savefig("plot1_all_pairs.png", dpi=150, bbox_inches="tight")
     plt.show()
 
-    # --- Plot 2 ---
-    fig, ax = plt.subplots(figsize=(7, 5))
+    # --- Plot 2: Bigram frequencies ---
+    fig2, (ax3, ax4) = plt.subplots(2, 1, figsize=(9, 9), sharey=True)
 
-    avg_within_a = sum(within_a.values())  / len(within_a)
-    avg_between_a = sum(between_a.values()) / len(between_a)
-    avg_within_b = sum(within_b.values())  / len(within_b)
-    avg_between_b = sum(between_b.values()) / len(between_b)
+    def plot_bigram_frequencies(ax, bigrams, within, between):
+        within_sorted = dict(
+            sorted({p: bigrams[p] for p in within if p in bigrams}.items(), key=lambda x: x[1], reverse=True))
+        between_sorted = dict(
+            sorted({p: bigrams[p] for p in between if p in bigrams}.items(), key=lambda x: x[1], reverse=True))
 
-    x = np.arange(2)  # within / between
-    width = 0.3
+        pairs = list(within_sorted.keys()) + list(between_sorted.keys())
+        values = list(within_sorted.values()) + list(between_sorted.values())
+        colors = ["steelblue"] * len(within_sorted) + ["salmon"] * len(between_sorted)
+        x = np.arange(len(pairs))
+        labels = [f"{a}-{b}" for a, b in pairs]
 
-    ax.bar(x - width/2, [avg_within_a, avg_between_a], width, color="steelblue", label="Condition A")
-    ax.bar(x + width/2, [avg_within_b, avg_between_b], width, color="salmon",    label="Condition B")
+        ax.bar(x, values, color=colors)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=16)
+        ax.set_ylabel("Bigram frequency", fontsize = 16)
+        ax.tick_params(axis='y', labelsize=16)
+        ax.axvline(x=len(within_sorted) - 0.5, color="gray", linestyle="--", linewidth=1)
+        mean_val = np.mean(values)
+        ax.axhline(y=mean_val, color="dimgray", linestyle="--", linewidth=1)
+        ax.legend(handles=make_legend(mean_val), loc="upper right", fontsize=16)
 
-    ax.set_xticks(x)
-    ax.set_xticklabels(["within-word pairs", "between-word pairs"])
-    ax.set_ylabel("Mean TP")
-    ax.set_ylim(0, 1.1)
-    ax.set_title("Plot 2: Average TP – within vs. between word boundaries")
-    ax.legend()
+    plot_bigram_frequencies(ax3, bigrams_a, within_a, between_a)
+    plot_bigram_frequencies(ax4, bigrams_b, within_b, between_b)
 
     plt.tight_layout()
-    plt.savefig("plot2_averaged.png", dpi=150, bbox_inches="tight")
+    plt.savefig("plot2_bigram_frequencies.png", dpi=150, bbox_inches="tight")
     plt.show()

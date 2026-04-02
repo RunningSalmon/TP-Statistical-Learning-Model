@@ -13,7 +13,7 @@ def separate_stream_using_tps(stream: list[str], tps: dict) -> list[str]:
     word = ""
     word += stream[0]
     for i in range(len(stream)-1):
-        if tps[stream[i], stream[i+1]] < tp_threshold:
+        if (stream[i], stream[i+1]) not in tps or tps[stream[i], stream[i+1]] < tp_threshold:
             word_list.append(word)
             word = stream[i+1]
         else:
