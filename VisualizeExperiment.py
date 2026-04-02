@@ -65,7 +65,6 @@ def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, exp
     plot_all_pairs(ax2, within_b, between_b)
 
     plt.tight_layout()
-    plt.savefig("plot1_all_pairs.png", dpi=150, bbox_inches="tight")
     plt.show()
 
     # --- Plot 2: Bigram frequencies ---
@@ -97,5 +96,4 @@ def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, exp
     plot_bigram_frequencies(ax4, bigrams_b, within_b, between_b)
 
     plt.tight_layout()
-    plt.savefig("plot2_bigram_frequencies.png", dpi=150, bbox_inches="tight")
     plt.show()
