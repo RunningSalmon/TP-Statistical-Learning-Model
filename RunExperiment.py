@@ -7,6 +7,7 @@ from VisualizeExperiment import *
 
 def run_experiment(experiment_nr: int, num_trials: int) -> [dict, dict, dict, dict, float]:
     """runs the experiment according to the given experiment number.
+    :param experiment_nr: 0 -> Saffran et al., 1 -> Aslin et al.
     :return: average_tps_a, average_tps_b, average_bigram_count_a, average_bigram_count_b, average_accuracy"""
     summed_accuracy = 0
     summed_bigrams_condition_a = {}
@@ -81,7 +82,7 @@ if __name__ == '__main__':
     # experiment to run:
     # Saffran et al.: experiment_nr = 0
     # Aslin et al.: experiment_nr = 1
-    experiment_nr = 1
+    experiment_nr = 0
     num_trials = 240
 
     overall_tps_a, overall_tps_b, bigrams_a, bigrams_b, overall_accuracy = run_experiment(experiment_nr, num_trials)

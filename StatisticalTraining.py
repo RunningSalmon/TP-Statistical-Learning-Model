@@ -3,13 +3,13 @@ def calculate_unigram_bigram_counts(speech_stream: list[str]):
     unigram_counts = {}
     bigram_counts = {}
     for i in range(len(speech_stream) - 1):
-        # count general quantity
+        # count general quantity (unigrams)
         syllable = speech_stream[i]
         if syllable not in unigram_counts:
             unigram_counts[syllable] = 0
         unigram_counts[syllable] += 1
 
-        # count co-occurrence
+        # count co-occurrence (bigrams)
         next_syllable = speech_stream[i + 1]
         if (syllable, next_syllable) not in bigram_counts:
             bigram_counts[syllable, next_syllable] = 0

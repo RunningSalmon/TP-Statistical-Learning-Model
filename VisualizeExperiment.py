@@ -1,5 +1,3 @@
-import pickle
-
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import numpy as np
@@ -37,7 +35,7 @@ def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, exp
             mlines.Line2D([0], [0], color="dimgray", linestyle="--", label=f"mean = {mean_val:.2f}"),
         ]
 
-    # --- Plot 1 ---
+    # --- Plot 1: TPs ---
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 9))
 
     def plot_all_pairs(ax, within, between, title):
