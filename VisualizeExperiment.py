@@ -40,7 +40,7 @@ def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, exp
     # --- Plot 1 ---
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 9))
 
-    def plot_all_pairs(ax, within, between):
+    def plot_all_pairs(ax, within, between, title):
         within_sorted = dict(sorted(within.items(), key=lambda x: x[1], reverse=True))
         between_sorted = dict(sorted(between.items(), key=lambda x: x[1], reverse=True))
 
@@ -53,16 +53,16 @@ def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, exp
         ax.bar(x, values, color=colors)
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=16)
+        ax.set_title(title, fontsize=16)
         ax.set_ylabel("Mean TP", fontsize = 16)
         ax.set_ylim(0, 1.1)
         ax.tick_params(axis='y', labelsize=16)
-        ax.axvline(x=len(within_sorted) - 0.5, color="gray", linestyle="--", linewidth=1)
         mean_val = np.mean(values)
         ax.axhline(y=mean_val, color="dimgray", linestyle="--", linewidth=1)
         ax.legend(handles=make_legend(mean_val), loc="upper right", fontsize=16)
 
-    plot_all_pairs(ax1, within_a, between_a)
-    plot_all_pairs(ax2, within_b, between_b)
+    plot_all_pairs(ax1, within_a, between_a, "Condition A")
+    plot_all_pairs(ax2, within_b, between_b, "Condition B")
 
     plt.tight_layout()
     plt.show()
@@ -70,7 +70,7 @@ def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, exp
     # --- Plot 2: Bigram frequencies ---
     fig2, (ax3, ax4) = plt.subplots(2, 1, figsize=(9, 9), sharey=True)
 
-    def plot_bigram_frequencies(ax, bigrams, within, between):
+    def plot_bigram_frequencies(ax, bigrams, within, between, title):
         within_sorted = dict(
             sorted({p: bigrams[p] for p in within if p in bigrams}.items(), key=lambda x: x[1], reverse=True))
         between_sorted = dict(
@@ -86,14 +86,14 @@ def plot_results(tps_a: dict, tps_b: dict, bigrams_a: dict, bigrams_b: dict, exp
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=16)
         ax.set_ylabel("Bigram frequency", fontsize = 16)
+        ax.set_title(title, fontsize=16)
         ax.tick_params(axis='y', labelsize=16)
-        ax.axvline(x=len(within_sorted) - 0.5, color="gray", linestyle="--", linewidth=1)
         mean_val = np.mean(values)
         ax.axhline(y=mean_val, color="dimgray", linestyle="--", linewidth=1)
         ax.legend(handles=make_legend(mean_val), loc="upper right", fontsize=16)
 
-    plot_bigram_frequencies(ax3, bigrams_a, within_a, between_a)
-    plot_bigram_frequencies(ax4, bigrams_b, within_b, between_b)
+    plot_bigram_frequencies(ax3, bigrams_a, within_a, between_a, "Condition A")
+    plot_bigram_frequencies(ax4, bigrams_b, within_b, between_b, "Condition B")
 
     plt.tight_layout()
     plt.show()
